@@ -23,7 +23,7 @@ build:
     - export CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_CUBLAS=ON"                        # [cuda_compiler_version != "None"]
     - export CMAKE_ARGS="${CMAKE_ARGS} -DDLLAMA_ACCELERATE=ON -DLLAMA_METAL=ON"  # [osx]
     - {{ PYTHON }} -m pip install . -vv
-  number: 1
+  number: 2
 
 requirements:
   build:
