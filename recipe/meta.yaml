@@ -14,16 +14,15 @@ source:
 
 build:
   skip: True  # [win]
-  skip: True  # [osx]
+  skip: True  # [linux]  # Save CI/CD resources while testing
   skip: True  # [linux and cuda_compiler_version == "None"]
+  number: 4
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
   script:
     - export CMAKE_ARGS="${CMAKE_ARGS} -DLLAVA_BUILD=OFF"
     - export CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_CUBLAS=ON"                        # [cuda_compiler_version != "None"]
-    - export CMAKE_ARGS="${CMAKE_ARGS} -DDLLAMA_ACCELERATE=ON -DLLAMA_METAL=ON"  # [osx]
     - {{ PYTHON }} -m pip install . -vv
-  number: 3
 
 requirements:
   build:
