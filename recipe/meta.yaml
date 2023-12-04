@@ -36,6 +36,7 @@ requirements:
     - python
     - scikit-build-core >=0.5.1
     - pip
+    - cuda-cudart-dev         # [(cuda_compiler_version or "").startswith("12")]
     - libcublas-dev           # [(cuda_compiler_version or "").startswith("12")]
   run:
     - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
