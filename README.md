@@ -76,6 +76,13 @@ Current build status
                 </a>
               </td>
             </tr><tr>
+              <td>linux_64_c_compiler_version11cuda_compilernvcccuda_compiler_version11.8cxx_compiler_version11python3.12.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=20870&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/llama-cpp-python-feedstock?branchName=main&jobName=linux&configuration=linux%20linux_64_c_compiler_version11cuda_compilernvcccuda_compiler_version11.8cxx_compiler_version11python3.12.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
               <td>linux_64_c_compiler_version11cuda_compilernvcccuda_compiler_version11.8cxx_compiler_version11python3.8.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=20870&branchName=main">
