@@ -15,7 +15,6 @@ source:
 
 build:
   skip: True  # [win]
-  skip: True  # [linux]  # Save CI/CD resources while testing
   skip: True  # [linux and cuda_compiler_version == "None"]
   number: 4
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
