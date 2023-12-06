@@ -11,7 +11,7 @@ source:
   patches:
     # https://github.com/abetlen/llama-cpp-python/commit/e3941d9c674dbd9891dc3ceda390daeb21f05fd1
     - e3941d9.patch 
-    - osx-64-pick-discrete.patch  # [osx and x86_64]
+    - osx-64-pick-discrete.patch  # [osx]
 
 build:
   skip: True  # [win]
