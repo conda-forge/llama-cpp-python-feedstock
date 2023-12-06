@@ -11,7 +11,7 @@ source:
   patches:
     # https://github.com/abetlen/llama-cpp-python/commit/e3941d9c674dbd9891dc3ceda390daeb21f05fd1
     - e3941d9.patch 
-    - osx-64-pick-discrete.patch  # [osx and x86_64]
+    - osx-64-pick-discrete.patch  # [osx]
 
 build:
   skip: True  # [win]
@@ -19,6 +19,7 @@ build:
   number: 4
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
+  string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx]
   script:
     - export CMAKE_ARGS="${CMAKE_ARGS} -DLLAVA_BUILD=OFF"
     - export CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_CUBLAS=ON"                       # [cuda_compiler_version != "None"]
@@ -27,6 +28,8 @@ build:
 
 requirements:
   build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
