@@ -15,12 +15,12 @@ source:
 
 build:
   skip: True  # [osx or linux]  # To save CI/CD Resources
-  skip: True  # [(win or linux) and cuda_compiler_version == "None"]
-  skip: True  # [cuda_compiler_version != "12.0"]
+  skip: True  # [linux and cuda_compiler_version == "None"]
+  skip: True  # [not(win and cuda_compiler_version == "None" and blas_impl == "mkl")]
   skip: True  # [py != 312]
   number: 4
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
-  string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
+  string: cpu_{{ blas_impl }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                 # [not osx and cuda_compiler_version == "None"]
   string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx]
   script:
     {% macro cmake_args(key, value) -%}
@@ -38,6 +38,9 @@ build:
     {{ llama_args("METAL", "ON") }}          # [osx]
     {{ llama_args("CUBLAS", "ON") }}         # [cuda_compiler_version != "None"]
 
+    {{ llama_args("BLAS", "ON") }}                        # [not osx and cuda_compiler_version == "None"]
+    {{ llama_args("BLAS_VENDOR", "Intel10_64_dyn") }}     # [blas_impl == "mkl"]
+
     - {{ PYTHON }} -m pip install . -vv
 
 requirements:
@@ -51,14 +54,19 @@ requirements:
     - {{ compiler('cuda') }}                 # [cuda_compiler_version != "None"]
     - cmake
     - make                                   # [not win]
+    # Required to find mkl on windows
+    - pkgconfig  # [win and blas_impl == "mkl"]
   host:
     - python
     - scikit-build-core >=0.5.1
     - pip
 
     # llama.cpp deps
-    - cuda-cudart-dev                        # [(cuda_compiler_version or "").startswith("12")]
-    - libcublas-dev                          # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-cudart-dev                # [(cuda_compiler_version or "").startswith("12")]
+    - libcublas-dev                  # [(cuda_compiler_version or "").startswith("12")]
+
+    - blas-devel * *{{ blas_impl }}  # [blas_impl == "mkl"]
+    - mkl-devel {{ mkl }}            # [blas_impl == "mkl"]
   run:
     - python
     - typing-extensions >=4.5.0
@@ -75,6 +83,7 @@ requirements:
     - cuda-cudart  {{ cuda_compiler_version }}   # [(cuda_compiler_version or "").startswith("12")]
     - cuda-cudart_{{ target_platform }} {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12") and win]
 
+    - llvm-openmp                                # [linux and blas_impl == "mkl"]
 test:
   imports:
     - llama_cpp
