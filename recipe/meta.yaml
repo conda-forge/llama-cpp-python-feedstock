@@ -54,7 +54,7 @@ requirements:
     - {{ compiler('cuda') }}                 # [cuda_compiler_version != "None"]
     - cmake
     - git
-    - ninja
+    - make
     # Required to find mkl on windows
     - pkgconfig  # [blas_impl == "mkl"]
   host:
