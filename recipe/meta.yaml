@@ -54,9 +54,9 @@ requirements:
     - {{ compiler('cuda') }}                 # [cuda_compiler_version != "None"]
     - cmake
     - git
-    - make                                   # [not win]
+    - ninja
     # Required to find mkl on windows
-    - pkgconfig  # [win and blas_impl == "mkl"]
+    - pkgconfig  # [blas_impl == "mkl"]
   host:
     - python
     - scikit-build-core >=0.5.1
@@ -83,8 +83,6 @@ requirements:
     - cuda-version {{ cuda_compiler_version }}   # [cuda_compiler_version != "None"]
     - cuda-cudart  {{ cuda_compiler_version }}   # [(cuda_compiler_version or "").startswith("12")]
     - cuda-cudart_{{ target_platform }} {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12") and win]
-
-    - llvm-openmp                                # [linux and blas_impl == "mkl"]
 test:
   imports:
     - llama_cpp
