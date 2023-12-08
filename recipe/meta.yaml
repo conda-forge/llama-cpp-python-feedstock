@@ -14,8 +14,10 @@ source:
     - osx-64-pick-discrete.patch  # [osx]
 
 build:
-  skip: True  # [win]
-  skip: True  # [linux and cuda_compiler_version == "None"]
+  skip: True  # [osx or linux]  # To save CI/CD Resources
+  skip: True  # [(win or linux) and cuda_compiler_version == "None"]
+  skip: True  # [cuda_compiler_version != "12.0"]
+  skip: True  # [py != 312]
   number: 4
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
@@ -31,9 +33,11 @@ build:
 
     {{ cmake_args("LLAVA_BUILD", "OFF") }}
 
-    {{ llama_args("CUBLAS", "ON") }}         # [cuda_compiler_version != "None"]
+    {{ llama_args("NATIVE=OFF") }}           # [(osx and arm64) or win]
     {{ llama_args("ACCELERATE", "ON") }}     # [osx]
     {{ llama_args("METAL", "ON") }}          # [osx]
+    {{ llama_args("CUBLAS", "ON") }}         # [cuda_compiler_version != "None"]
+
     - {{ PYTHON }} -m pip install . -vv
 
 requirements:
@@ -69,6 +73,7 @@ requirements:
     # llama.cpp deps
     - cuda-version {{ cuda_compiler_version }}   # [cuda_compiler_version != "None"]
     - cuda-cudart  {{ cuda_compiler_version }}   # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-cudart_{{ target_platform }} {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12") and win]
 
 test:
   imports:
