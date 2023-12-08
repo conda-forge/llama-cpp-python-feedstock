@@ -12,6 +12,7 @@ source:
     # https://github.com/abetlen/llama-cpp-python/commit/e3941d9c674dbd9891dc3ceda390daeb21f05fd1
     - e3941d9.patch 
     - osx-64-pick-discrete.patch  # [osx]
+    - mkl.patch                   # [blas_impl == "mkl"]
 
 build:
   skip: True  # [osx or linux]  # To save CI/CD Resources
@@ -53,6 +54,7 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ compiler('cuda') }}                 # [cuda_compiler_version != "None"]
     - cmake
+    - git
     - make                                   # [not win]
     # Required to find mkl on windows
     - pkgconfig  # [win and blas_impl == "mkl"]
