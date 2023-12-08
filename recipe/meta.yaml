@@ -33,7 +33,7 @@ build:
 
     {{ cmake_args("LLAVA_BUILD", "OFF") }}
 
-    {{ llama_args("NATIVE=OFF") }}           # [(osx and arm64) or win]
+    {{ llama_args("NATIVE", "OFF") }}           # [(osx and arm64) or win]
     {{ llama_args("ACCELERATE", "ON") }}     # [osx]
     {{ llama_args("METAL", "ON") }}          # [osx]
     {{ llama_args("CUBLAS", "ON") }}         # [cuda_compiler_version != "None"]
