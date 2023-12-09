@@ -15,9 +15,7 @@ source:
     - mkl.patch                   # [blas_impl == "mkl"]
 
 build:
-  skip: True  # [osx]  # To save CI/CD Resources
   skip: True  # [not((linux or win) and cuda_compiler_version == "None" and blas_impl == "mkl")]
-  skip: True  # [py != 312]
   number: 4
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_{{ blas_impl }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                 # [not osx and cuda_compiler_version == "None"]
@@ -33,7 +31,7 @@ build:
 
     {{ cmake_args("LLAVA_BUILD", "OFF") }}
 
-    {{ llama_args("NATIVE", "OFF") }}           # [(osx and arm64) or win]
+    {{ llama_args("NATIVE", "OFF") }}        # [(osx and arm64) or win]
     {{ llama_args("ACCELERATE", "ON") }}     # [osx]
     {{ llama_args("METAL", "ON") }}          # [osx]
     {{ llama_args("CUBLAS", "ON") }}         # [cuda_compiler_version != "None"]
