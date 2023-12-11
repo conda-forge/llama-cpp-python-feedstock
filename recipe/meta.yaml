@@ -16,6 +16,10 @@ source:
 
 build:
   number: 6
+  missing_dso_whitelist:
+    - "*/libllama.so*"     # [linux]
+    - "*/libllama.dylib*"  # [osx]
+    - "*/libllama.dll*"    # [win]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_{{ blas_impl }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                 # [(osx and x86_64) or cuda_compiler_version == "None"]
   string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx and arm64]
