@@ -15,7 +15,6 @@ source:
     - mkl.patch                   # [blas_impl == "mkl"]
 
 build:
-  skip: True  # [win and cuda_compiler_version not in ("None", "12.0")]
   number: 5
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_{{ blas_impl }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                 # [not osx and cuda_compiler_version == "None"]
