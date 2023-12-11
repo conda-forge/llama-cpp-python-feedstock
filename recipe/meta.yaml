@@ -15,11 +15,10 @@ source:
     - mkl.patch                   # [blas_impl == "mkl"]
 
 build:
-  skip: True  # [win and cuda_compiler_version != "None"]
-  number: 4
+  number: 5
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
-  string: cpu_{{ blas_impl }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                 # [not osx and cuda_compiler_version == "None"]
-  string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx]
+  string: cpu_{{ blas_impl }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                 # [(osx and x86_64) or cuda_compiler_version == "None"]
+  string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx and arm64]
   script:
     {% macro cmake_args(key, value) -%}
     - export CMAKE_ARGS="${CMAKE_ARGS} -D{{ key }}={{ value }}"    # [unix]
@@ -33,11 +32,17 @@ build:
 
     {{ llama_args("NATIVE", "OFF") }}        # [(osx and arm64) or win]
     {{ llama_args("ACCELERATE", "ON") }}     # [osx]
-    {{ llama_args("METAL", "ON") }}          # [osx]
+    {{ llama_args("METAL", "ON") }}          # [osx and arm64]
+    {{ llama_args("METAL", "OFF") }}         # [osx and x86_64]
     {{ llama_args("CUBLAS", "ON") }}         # [cuda_compiler_version != "None"]
 
     {{ llama_args("BLAS", "ON") }}                        # [not osx and cuda_compiler_version == "None"]
     {{ llama_args("BLAS_VENDOR", "Intel10_64_dyn") }}     # [blas_impl == "mkl"]
+
+    - export CMAKE_GENERATOR=Ninja    # [unix]
+    - set CMAKE_GENERATOR=Ninja       # [win]
+    - set CMAKE_GENERATOR_PLATFORM=   # [win]
+    - set CMAKE_GENERATOR_TOOLSET=    # [win]
 
     - {{ PYTHON }} -m pip install . -vv
 
@@ -52,7 +57,7 @@ requirements:
     - {{ compiler('cuda') }}                 # [cuda_compiler_version != "None"]
     - cmake
     - git
-    - make
+    - ninja
     # Required to find mkl on windows
     - pkgconfig  # [blas_impl == "mkl"]
   host:
