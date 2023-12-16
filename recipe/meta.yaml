@@ -22,10 +22,29 @@ build:
 
     - {{ PYTHON }} -m pip install . -vv
 
+    - conda activate --stack ${PREFIX}  # [unix]
+    - conda activate --stack %PREFIX%   # [win]
+
+    - conda env config vars set LLAMA_CPP_LIB=${PREFIX}/lib/libllama.so          # [linux]
+    - conda env config vars set LLAMA_CPP_LIB=${PREFIX}/lib/libllama.dylib       # [osx]
+    - conda env config vars set LLAMA_CPP_LIB=%PREFIX%\Library\bin\libllama.dll  # [win]
+
+    - conda env config vars set LLAMA_CPP_LIB=${PREFIX}/lib/libllava_shared.so          # [linux]
+    - conda env config vars set LLAMA_CPP_LIB=${PREFIX}/lib/libllava_shared.dylib       # [osx]
+    - conda env config vars set LLAMA_CPP_LIB=%PREFIX%\Library\bin\libllava_shared.dll  # [win]
+
+    - conda deactivate
+
 requirements:
   build:
     - python                                 # [build_platform != target_platform]
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - pkgconfig
+
   host:
     - python
     - scikit-build-core >=0.5.1
@@ -37,13 +56,16 @@ requirements:
     - numpy >=1.20.0
     - diskcache >=5.6.1
 
+    # TODO: This needs to be version locked
+    # TODO: Use libllama instead!
+    - llama.cpp
+
     # Split into llama-cpp-python-server
     - uvicorn >=0.22.0
     - fastapi >=0.100.0
     - pydantic-settings >=2.0.1
     - sse-starlette >=1.6.1
     - starlette-context >=0.3.6,<0.4
-
 test:
   imports:
     - llama_cpp
