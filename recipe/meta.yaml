@@ -8,6 +8,9 @@ package:
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/llama_cpp_python-{{ version }}.tar.gz
   sha256: a0ada1cb800ba4da60ea6ac4f7264b687a35412374e5af2c92e5b22852cdbafb
+  patches:
+    # Asks cdll to look for the library in the path as well.
+    - try-lib-in-path.patch
 
 build:
   number: 7
@@ -21,20 +24,6 @@ build:
     {{ cmake_args("LLAVA_BUILD", "OFF") }}
 
     - {{ PYTHON }} -m pip install . -vv
-
-    - conda activate --stack ${PREFIX}  # [unix]
-    - conda activate --stack %PREFIX%   # [win]
-
-    - conda env config vars set LLAMA_CPP_LIB=${PREFIX}/lib/libllama.so          # [linux]
-    - conda env config vars set LLAMA_CPP_LIB=${PREFIX}/lib/libllama.dylib       # [osx]
-    - conda env config vars set LLAMA_CPP_LIB=%PREFIX%\Library\bin\libllama.dll  # [win]
-
-    - conda env config vars set LLAMA_CPP_LIB=${PREFIX}/lib/libllava_shared.so          # [linux]
-    - conda env config vars set LLAMA_CPP_LIB=${PREFIX}/lib/libllava_shared.dylib       # [osx]
-    - conda env config vars set LLAMA_CPP_LIB=%PREFIX%\Library\bin\libllava_shared.dll  # [win]
-
-    - conda deactivate
-
 requirements:
   build:
     - python                                 # [build_platform != target_platform]
