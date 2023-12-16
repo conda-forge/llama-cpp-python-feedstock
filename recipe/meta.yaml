@@ -43,6 +43,7 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - cmake
+    - ninja
     - pkgconfig
 
   host:
