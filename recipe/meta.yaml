@@ -1,5 +1,5 @@
 {% set name = "llama-cpp-python" %}
-{% set version = "0.2.20" %}
+{% set version = "0.2.23" %}
 
 package:
   name: {{ name|lower }}
@@ -7,13 +7,13 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/llama_cpp_python-{{ version }}.tar.gz
-  sha256: a0ada1cb800ba4da60ea6ac4f7264b687a35412374e5af2c92e5b22852cdbafb
+  sha256: 364b61a13970932ea189b45a1c5dea89797b90e5da00f1fe6e72c47fbc512898
   patches:
     # Asks cdll to look for the library in the path as well.
     - try-lib-in-path.patch
 
 build:
-  number: 7
+  number: 0
   script:
     {% macro cmake_args(key, value) -%}
     - export CMAKE_ARGS="${CMAKE_ARGS} {{ key }}={{ value }}"    # [unix]
@@ -48,7 +48,7 @@ requirements:
 
     # TODO: This needs to be version locked
     # TODO: Use libllama instead!
-    - llama.cpp
+    - llama.cpp 0.0.1621
 
     # Split into llama-cpp-python-server
     - uvicorn >=0.22.0
