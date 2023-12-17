@@ -1,5 +1,5 @@
 diff --git a/llama_cpp/llama_cpp.py b/llama_cpp/llama_cpp.py
-index 4e4c870..b00569a 100644
+index 4e4c870..37a126b 100644
 --- a/llama_cpp/llama_cpp.py
 +++ b/llama_cpp/llama_cpp.py
 @@ -33,16 +33,21 @@ def _load_shared_library(lib_base_name: str):
@@ -24,8 +24,17 @@ index 4e4c870..b00569a 100644
          ]
      else:
          raise RuntimeError("Unsupported platform")
+@@ -64,7 +69,7 @@ def _load_shared_library(lib_base_name: str):
+ 
+     # Try to load the shared library, handling potential errors
+     for _lib_path in _lib_paths:
+-        if _lib_path.exists():
++        if _lib_path.exists() or isinstance(_lib_path, str):
+             try:
+                 return ctypes.CDLL(str(_lib_path), **cdll_args)
+             except Exception as e:
 diff --git a/llama_cpp/llava_cpp.py b/llama_cpp/llava_cpp.py
-index 72f6a12..187e0a7 100644
+index 72f6a12..cd912a7 100644
 --- a/llama_cpp/llava_cpp.py
 +++ b/llama_cpp/llava_cpp.py
 @@ -34,16 +34,21 @@ def _load_shared_library(lib_base_name: str):
@@ -50,3 +59,12 @@ index 72f6a12..187e0a7 100644
          ]
      else:
          raise RuntimeError("Unsupported platform")
+@@ -65,7 +70,7 @@ def _load_shared_library(lib_base_name: str):
+ 
+     # Try to load the shared library, handling potential errors
+     for _lib_path in _lib_paths:
+-        if _lib_path.exists():
++        if _lib_path.exists() or isinstance(_lib_path, str):
+             try:
+                 return ctypes.CDLL(str(_lib_path), **cdll_args)
+             except Exception as e:
