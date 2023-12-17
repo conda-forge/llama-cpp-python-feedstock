@@ -1,5 +1,7 @@
 {% set name = "llama-cpp-python" %}
+# NOTE: VERIFY llama_cpp_version before merging!
 {% set version = "0.2.23" %}
+{% set llama_cpp_version = "0.0.1621"}
 
 package:
   name: {{ name|lower }}
@@ -46,9 +48,7 @@ requirements:
     - numpy >=1.20.0
     - diskcache >=5.6.1
 
-    # TODO: This needs to be version locked
-    # TODO: Use libllama instead!
-    - llama.cpp 0.0.1621
+    - llama.cpp {{ llama_cpp_version }}
 
     # Split into llama-cpp-python-server
     - uvicorn >=0.22.0
@@ -70,8 +70,6 @@ about:
   license: MIT
   license_file:
     - LICENSE.md
-    - vendor/llama.cpp/LICENSE
-    - vendor/llama.cpp/gguf-py/LICENSE
 
 extra:
   recipe-maintainers:
