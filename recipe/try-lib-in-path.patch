@@ -2,7 +2,7 @@ diff --git a/llama_cpp/llama_cpp.py b/llama_cpp/llama_cpp.py
 index 4e4c870..b0c1c5e 100644
 --- a/llama_cpp/llama_cpp.py
 +++ b/llama_cpp/llama_cpp.py
-@@ -33,16 +33,21 @@ def _load_shared_library(lib_base_name: str):
+@@ -31,16 +31,21 @@ def _load_shared_library(lib_base_name: str):
      if sys.platform.startswith("linux"):
          _lib_paths += [
              _base_path / f"lib{lib_base_name}.so",
@@ -24,20 +24,19 @@ index 4e4c870..b0c1c5e 100644
          ]
      else:
          raise RuntimeError("Unsupported platform")
-@@ -64,14 +69,16 @@ def _load_shared_library(lib_base_name: str):
+@@ -65,14 +70,16 @@ def _load_shared_library(lib_base_name: str):
  
      # Try to load the shared library, handling potential errors
      for _lib_path in _lib_paths:
 -        if _lib_path.exists():
 +        if isinstance(_lib_path, str) or _lib_path.exists():
              try:
-                 return ctypes.CDLL(str(_lib_path), **cdll_args)
+                 return ctypes.CDLL(str(_lib_path), **cdll_args)  # type: ignore
 +            except OSError:
 +                pass
              except Exception as e:
                  raise RuntimeError(f"Failed to load shared library '{_lib_path}': {e}")
--
-+            
+ 
      raise FileNotFoundError(
 -        f"Shared library with base name '{lib_base_name}' not found"
 +        f"Shared library with base name '{lib_base_name}' not found in {_lib_paths}"
@@ -48,7 +47,7 @@ diff --git a/llama_cpp/llava_cpp.py b/llama_cpp/llava_cpp.py
 index 72f6a12..68fa351 100644
 --- a/llama_cpp/llava_cpp.py
 +++ b/llama_cpp/llava_cpp.py
-@@ -34,16 +34,21 @@ def _load_shared_library(lib_base_name: str):
+@@ -29,16 +29,21 @@ def _load_shared_library(lib_base_name: str):
      if sys.platform.startswith("linux"):
          _lib_paths += [
              _base_path / f"lib{lib_base_name}.so",
@@ -70,16 +69,22 @@ index 72f6a12..68fa351 100644
          ]
      else:
          raise RuntimeError("Unsupported platform")
-@@ -65,9 +70,11 @@ def _load_shared_library(lib_base_name: str):
+@@ -60,14 +65,16 @@ def _load_shared_library(lib_base_name: str):
  
      # Try to load the shared library, handling potential errors
      for _lib_path in _lib_paths:
 -        if _lib_path.exists():
 +        if isinstance(_lib_path, str) or _lib_path.exists():
              try:
-                 return ctypes.CDLL(str(_lib_path), **cdll_args)
+                 return ctypes.CDLL(str(_lib_path), **cdll_args) # type: ignore
 +            except OSError:
 +                pass
              except Exception as e:
                  raise RuntimeError(f"Failed to load shared library '{_lib_path}': {e}")
+ 
+     raise FileNotFoundError(
+-        f"Shared library with base name '{lib_base_name}' not found"
++        f"Shared library with base name '{lib_base_name}' not found in {_lib_paths}"
+     )
+ 
  
