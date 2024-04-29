@@ -13,6 +13,7 @@ source:
     - try-lib-in-path.patch
 
 build:
+  skip: true  # [py<38]
   number: 0
   script:
     {% macro cmake_args(key, value) -%}
