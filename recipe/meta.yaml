@@ -15,7 +15,7 @@ source:
     - try-lib-in-path.patch
 
 build:
-  number: 0
+  number: 1
   script:
     {% macro cmake_args(key, value) -%}
     - export CMAKE_ARGS="${CMAKE_ARGS} {{ key }}={{ value }}"    # [unix]
@@ -32,6 +32,7 @@ requirements:
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
 
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
     - cmake
     - make
