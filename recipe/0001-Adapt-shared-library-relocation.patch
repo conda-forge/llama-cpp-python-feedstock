@@ -1,0 +1,91 @@
+From 8156a3728b89cbb944abf5af8376100da8832965 Mon Sep 17 00:00:00 2001
+From: Julien Jerphanion <git@jjerphan.xyz>
+Date: Fri, 22 Aug 2025 10:22:47 +0200
+Subject: [PATCH] Adapt shared library relocation
+
+Signed-off-by: Julien Jerphanion <git@jjerphan.xyz>
+---
+ llama_cpp/_ctypes_extensions.py | 11 +++++++++--
+ llama_cpp/llama_cpp.py          | 13 +++++++++++++
+ 2 files changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/llama_cpp/_ctypes_extensions.py b/llama_cpp/_ctypes_extensions.py
+index e88ed38..0acd159 100644
+--- a/llama_cpp/_ctypes_extensions.py
++++ b/llama_cpp/_ctypes_extensions.py
+@@ -29,16 +29,21 @@ def load_shared_library(lib_base_name: str, base_path: pathlib.Path):
+     if sys.platform.startswith("linux") or sys.platform.startswith("freebsd"):
+         lib_paths += [
+             base_path / f"lib{lib_base_name}.so",
++            f"lib{lib_base_name}.so",
+         ]
+     elif sys.platform == "darwin":
+         lib_paths += [
+             base_path / f"lib{lib_base_name}.so",
+             base_path / f"lib{lib_base_name}.dylib",
++            f"{lib_base_name}.so",
++            f"lib{lib_base_name}.dylib",
+         ]
+     elif sys.platform == "win32":
+         lib_paths += [
+             base_path / f"{lib_base_name}.dll",
+             base_path / f"lib{lib_base_name}.dll",
++            f"{lib_base_name}.dll",
++            f"lib{lib_base_name}.dll",
+         ]
+     else:
+         raise RuntimeError("Unsupported platform")
+@@ -62,14 +67,16 @@ def load_shared_library(lib_base_name: str, base_path: pathlib.Path):
+ 
+     # Try to load the shared library, handling potential errors
+     for lib_path in lib_paths:
+-        if lib_path.exists():
++        if isinstance(lib_path, str) or lib_path.exists():
+             try:
+                 return ctypes.CDLL(str(lib_path), **cdll_args)  # type: ignore
++            except OSError:
++                pass
+             except Exception as e:
+                 raise RuntimeError(f"Failed to load shared library '{lib_path}': {e}")
+ 
+     raise FileNotFoundError(
+-        f"Shared library with base name '{lib_base_name}' not found"
++        f"Shared library with base name '{lib_base_name}' not found in {lib_paths}."
+     )
+ 
+ 
+diff --git a/llama_cpp/llama_cpp.py b/llama_cpp/llama_cpp.py
+index 711d42a..a23c778 100644
+--- a/llama_cpp/llama_cpp.py
++++ b/llama_cpp/llama_cpp.py
+@@ -3,6 +3,7 @@ from __future__ import annotations
+ import os
+ import ctypes
+ import pathlib
++import sys
+ 
+ from typing import (
+     Callable,
+@@ -32,7 +33,19 @@ if TYPE_CHECKING:
+ 
+ # Specify the base name of the shared library to load
+ _lib_base_name = "llama"
++
+ _override_base_path = os.environ.get("LLAMA_CPP_LIB_PATH")
++if sys.platform.startswith("win") and _override_base_path is None:
++    # llama.cpp windows' builds' DLL are stored in: `$CONDA_PREFIX/Library/bin/`
++    # We cannot assume that `$CONDA_PREFIX` is set, so we will use this
++    # file position to determine the prefix directory.
++
++    # This file directory in the prefix: `$CONDA_PREFIX/lib/site-packages/llama_cpp`
++    __this_file_dir = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
++    # Prefix directory: `$CONDA_PREFIX`
++    __prefix_dir = __this_file_dir.parent.parent.parent
++    _override_base_path = __prefix_dir / "Library" / "bin"
++
+ _base_path = pathlib.Path(os.path.abspath(os.path.dirname(__file__))) / "lib" if _override_base_path is None else pathlib.Path(_override_base_path)
+ # Load the library
+ _lib = load_shared_library(_lib_base_name, _base_path)
+-- 
+2.50.1
+

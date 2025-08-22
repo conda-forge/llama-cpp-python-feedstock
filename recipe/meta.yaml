@@ -12,7 +12,8 @@ source:
   sha256: 34ed0f9bd9431af045bb63d9324ae620ad0536653740e9bb163a2e1fcb973be6
   patches:
     # Asks cdll to look for the library in the path as well.
-    - 0001-Inspect-more-library-path-candidates.patch
+    - 0001-Adapt-shared-library-relocation.patch
+
 build:
   number: 0
   script:
