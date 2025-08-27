@@ -1,7 +1,7 @@
 {% set name = "llama-cpp-python" %}
 # NOTE: VERIFY llama_cpp_version before merging!
-{% set version = "0.2.24" %}
-{% set llama_cpp_version = "0.0.1660" %}
+{% set version = "0.3.16" %}
+{% set llama_cpp_version = "6191" %}
 
 package:
   name: {{ name|lower }}
@@ -9,13 +9,13 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/llama_cpp_python-{{ version }}.tar.gz
-  sha256: 85f8fd110b4b90599d5ff427bd4a1a4db6e70817c60ba8aa609fa5c645761ec1
+  sha256: 34ed0f9bd9431af045bb63d9324ae620ad0536653740e9bb163a2e1fcb973be6
   patches:
     # Asks cdll to look for the library in the path as well.
-    - try-lib-in-path.patch
+    - 0001-Adapt-shared-library-relocation.patch
 
 build:
-  number: 1
+  number: 0
   script:
     {% macro cmake_args(key, value) -%}
     - export CMAKE_ARGS="${CMAKE_ARGS} {{ key }}={{ value }}"    # [unix]
@@ -48,6 +48,7 @@ requirements:
     - typing-extensions >=4.5.0
     - numpy >=1.20.0
     - diskcache >=5.6.1
+    - pyyaml >=5.1
 
     - llama.cpp {{ llama_cpp_version }}
 
