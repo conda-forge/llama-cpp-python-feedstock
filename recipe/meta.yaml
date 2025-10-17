@@ -8,14 +8,14 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/llama_cpp_python-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/llama_cpp_python-{{ version }}.tar.gz
   sha256: 34ed0f9bd9431af045bb63d9324ae620ad0536653740e9bb163a2e1fcb973be6
   patches:
     # Asks cdll to look for the library in the path as well.
     - 0001-Adapt-shared-library-relocation.patch
 
 build:
-  number: 0
+  number: 1
   script:
     {% macro cmake_args(key, value) -%}
     - export CMAKE_ARGS="${CMAKE_ARGS} {{ key }}={{ value }}"    # [unix]
