@@ -1,7 +1,7 @@
 {% set name = "llama-cpp-python" %}
 # NOTE: VERIFY llama_cpp_version before merging!
 {% set version = "0.3.19" %}
-{% set llama_cpp_version = "8531" %}
+{% set llama_cpp_version = "8606" %}
 
 package:
   name: {{ name|lower }}
