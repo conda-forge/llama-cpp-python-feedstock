@@ -15,7 +15,7 @@ source:
     - 0001-Adapt-shared-library-relocation.patch
 
 build:
-  number: 1
+  number: 0
   script:
     {% macro cmake_args(key, value) -%}
     - export CMAKE_ARGS="${CMAKE_ARGS} {{ key }}={{ value }}"    # [unix]
