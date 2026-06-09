@@ -36,7 +36,7 @@ index e88ed38..0acd159 100644
      else:
          raise RuntimeError("Unsupported platform")
 @@ -62,14 +67,16 @@ def load_shared_library(lib_base_name: str, base_path: pathlib.Path):
- 
+
      # Try to load the shared library, handling potential errors
      for lib_path in lib_paths:
 -        if lib_path.exists():
@@ -47,15 +47,15 @@ index e88ed38..0acd159 100644
 +                pass
              except Exception as e:
                  raise RuntimeError(f"Failed to load shared library '{lib_path}': {e}")
- 
+
      raise FileNotFoundError(
 -        f"Shared library with base name '{lib_base_name}' not found"
 +        f"Shared library with base name '{lib_base_name}' not found in {lib_paths}."
      )
- 
- 
+
+
 diff --git a/llama_cpp/llama_cpp.py b/llama_cpp/llama_cpp.py
-index 711d42a..a23c778 100644
+index a5ec5d1..0fb4dfc 100644
 --- a/llama_cpp/llama_cpp.py
 +++ b/llama_cpp/llama_cpp.py
 @@ -3,6 +3,7 @@ from __future__ import annotations
@@ -63,11 +63,11 @@ index 711d42a..a23c778 100644
  import ctypes
  import pathlib
 +import sys
- 
+ import warnings
+
  from typing import (
-     Callable,
-@@ -32,7 +33,19 @@ if TYPE_CHECKING:
- 
+@@ -33,7 +34,19 @@ if TYPE_CHECKING:
+
  # Specify the base name of the shared library to load
  _lib_base_name = "llama"
 +
@@ -83,9 +83,9 @@ index 711d42a..a23c778 100644
 +    __prefix_dir = __this_file_dir.parent.parent.parent
 +    _override_base_path = __prefix_dir / "Library" / "bin"
 +
- _base_path = pathlib.Path(os.path.abspath(os.path.dirname(__file__))) / "lib" if _override_base_path is None else pathlib.Path(_override_base_path)
- # Load the library
- _lib = load_shared_library(_lib_base_name, _base_path)
--- 
+ _base_path = (
+     pathlib.Path(os.path.abspath(os.path.dirname(__file__))) / "lib"
+     if _override_base_path is None
+--
 2.50.1
 
