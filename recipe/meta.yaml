@@ -17,13 +17,10 @@ source:
 build:
   number: 0
   script:
-    {% macro cmake_args(key, value) -%}
-    - export CMAKE_ARGS="${CMAKE_ARGS} {{ key }}={{ value }}"    # [unix]
-    - set CMAKE_ARGS=%CMAKE_ARGS% {{ key }}={{ value }}          # [win]
-    {%- endmacro %}
-
-    {{ cmake_args("-DLLAMA_BUILD", "OFF") }}
-    {{ cmake_args("-DLLAVA_BUILD", "OFF") }}
+    - export CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_BUILD=OFF"  # [unix]
+    - set CMAKE_ARGS=%CMAKE_ARGS% -DLLAMA_BUILD=OFF        # [win]
+    - export CMAKE_ARGS="${CMAKE_ARGS} -DLLAVA_BUILD=OFF"  # [unix]
+    - set CMAKE_ARGS=%CMAKE_ARGS% -DLLAVA_BUILD=OFF        # [win]
 
     - {{ PYTHON }} -m pip install . -vv
 requirements:
