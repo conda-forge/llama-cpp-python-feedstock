@@ -300,4 +300,5 @@ Feedstock Maintainers
 * [@jjerphan](https://github.com/jjerphan/)
 * [@jonashaag](https://github.com/jonashaag/)
 * [@sodre](https://github.com/sodre/)
+* [@toniher](https://github.com/toniher/)
 
