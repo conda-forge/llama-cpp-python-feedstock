@@ -1,7 +1,7 @@
 {% set name = "llama-cpp-python" %}
 # NOTE: VERIFY llama_cpp_version before merging!
-{% set version = "0.3.23" %}
-{% set llama_cpp_version = "9222" %}
+{% set version = "0.3.28" %}
+{% set llama_cpp_version = "9574" %}
 
 package:
   name: {{ name|lower }}
@@ -9,13 +9,13 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/llama_cpp_python-{{ version }}.tar.gz
-  sha256: 85493cd887b543588941e8704640fef6a54c057443292e527559c30728375ffd
+  sha256: 958227b394f413425d6039952096daa0b8b98328c6b99d652862aec775f1672d
   patches:
     # Asks cdll to look for the library in the path as well.
     - 0001-Adapt-shared-library-relocation.patch
 
 build:
-  number: 0
+  number: 1
   script:
     - export CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_BUILD=OFF"  # [unix]
     - set CMAKE_ARGS=%CMAKE_ARGS% -DLLAMA_BUILD=OFF        # [win]
