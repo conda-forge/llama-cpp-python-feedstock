@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: llama-cpp-python
-  version: "0.3.32"
+  version: "0.3.33"
   # NOTE: VERIFY llama_cpp_version before merging!
   llama_cpp_version: "9851"
 
@@ -12,13 +12,13 @@ package:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/llama_cpp_python-${{ version }}.tar.gz
-  sha256: b06502361770f82eb08b7f1a192eb084b9ead2b88fe32cda8c397a2782eabde6
+  sha256: 369ba03d02caaef42c1ed07bbdc454f7436e47c7675b8b9757fa13fbac6acd92
   patches:
     # Asks cdll to look for the library in the path as well.
     - 0001-Adapt-shared-library-relocation.patch
 
 build:
-  number: 1
+  number: 0
   script:
     - if: win
       then:
