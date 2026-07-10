@@ -18,7 +18,7 @@ source:
     - 0001-Adapt-shared-library-relocation.patch
 
 build:
-  number: 0
+  number: 1
   script:
     - if: win
       then:
