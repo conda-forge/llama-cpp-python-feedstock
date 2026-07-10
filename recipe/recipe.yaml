@@ -4,7 +4,7 @@ context:
   name: llama-cpp-python
   version: "0.3.33"
   # NOTE: VERIFY llama_cpp_version before merging!
-  llama_cpp_version: "9851"
+  llama_cpp_version: "9923"
 
 package:
   name: ${{ name|lower }}
