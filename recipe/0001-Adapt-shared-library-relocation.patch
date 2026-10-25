@@ -66,7 +66,7 @@ index a5ec5d1..0fb4dfc 100644
  import warnings
 
  from typing import (
-@@ -33,7 +34,19 @@ if TYPE_CHECKING:
+@@ -33,7 +34,14 @@ if TYPE_CHECKING:
 
  # Specify the base name of the shared library to load
  _lib_base_name = "llama"
@@ -74,14 +74,9 @@ index a5ec5d1..0fb4dfc 100644
  _override_base_path = os.environ.get("LLAMA_CPP_LIB_PATH")
 +if sys.platform.startswith("win") and _override_base_path is None:
 +    # llama.cpp windows' builds' DLL are stored in: `$CONDA_PREFIX/Library/bin/`
-+    # We cannot assume that `$CONDA_PREFIX` is set, so we will use this
-+    # file position to determine the prefix directory.
-+
-+    # This file directory in the prefix: `$CONDA_PREFIX/lib/site-packages/llama_cpp`
-+    __this_file_dir = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
-+    # Prefix directory: `$CONDA_PREFIX`
-+    __prefix_dir = __this_file_dir.parent.parent.parent
-+    _override_base_path = __prefix_dir / "Library" / "bin"
++    # We cannot assume that `$CONDA_PREFIX` is set, and the site-packages depth
++    # differs across Python versions, so use the interpreter prefix.
++    _override_base_path = pathlib.Path(sys.prefix) / "Library" / "bin"
 +
  _base_path = (
      pathlib.Path(os.path.abspath(os.path.dirname(__file__))) / "lib"
